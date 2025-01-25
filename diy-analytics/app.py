@@ -42,17 +42,16 @@ if uploaded_file:
         summary_statistics.dataframe(data.describe())
 
     st.header("Chat with your data!")
+    show_code = st.toggle("Show generated code", False)
+    download_chart = st.toggle("Download chart", True)
+    if download_chart:
+                    format_options = ["PNG", "JPEG", "HTML"]
+                    selected_format = st.selectbox("Select download format:", format_options)
     user_query = st.text_input("Ask a question about your dataset:")
-    send, retry = st.columns(2)
-
-    with send:
-        send_button = st.button("Send")
-    with retry:
-        retry_button = st.button("Retry")
-
+    
 
     with st.spinner("Insights cooking..."):
-        if user_query or send_button or retry_button:
+        if user_query:
             code = handle_query(user_query, data)
 
             try:
@@ -74,33 +73,30 @@ if uploaded_file:
             except Exception as e:
                 st.error(f"Error executing code: {e}")
 
-           # Optionally display the generated code
-            if st.checkbox("Show code"):
+        # Optionally display the generated code
+            if show_code:
                 st.code(code, language="python")
 
-            if st.checkbox("Download chart"):
-                    format_options = ["PNG", "JPEG", "HTML"]
-                    selected_format = st.selectbox("Select format:", format_options)
 
-                    # Generate chart file in selected format
-                    if selected_format in ["PNG", "JPEG"]:
-                        buf = io.BytesIO()
-                        results["plt"].savefig(buf, format=selected_format.lower())
-                        buf.seek(0)
-                        st.download_button(
-                            label=f"Download Chart as {selected_format}",
-                            data=buf,
-                            file_name=f"chart.{selected_format.lower()}",
-                            mime=f"image/{selected_format.lower()}",
-                        )
-                    elif selected_format == "HTML":
-                        from matplotlib.backends.backend_svg import FigureCanvasSVG
-                        buf = io.StringIO()
-                        FigureCanvasSVG(results["plt"].gcf()).print_svg(buf)
-                        html_content = f"<html><body>{buf.getvalue()}</body></html>"
-                        st.download_button(
-                            label="Download Chart as HTML",
-                            data=html_content,
-                            file_name="chart.html",
-                            mime="text/html",
-                        )
+            # Generate chart file in selected format
+            if selected_format in ["PNG", "JPEG"]:
+                buf = io.BytesIO()
+                results["plt"].savefig(buf, format=selected_format.lower())
+                buf.seek(0)
+                st.download_button(
+                    label=f"Download Chart as {selected_format}",
+                    data=buf,
+                    file_name=f"chart.{selected_format.lower()}",
+                    mime=f"image/{selected_format.lower()}",
+                )
+            elif selected_format == "HTML":
+                from matplotlib.backends.backend_svg import FigureCanvasSVG
+                buf = io.StringIO()
+                FigureCanvasSVG(results["plt"].gcf()).print_svg(buf)
+                html_content = f"<html><body>{buf.getvalue()}</body></html>"
+                st.download_button(
+                    label="Download Chart as HTML",
+                    data=html_content,
+                    file_name="chart.html",
+                    mime="text/html",
+                )

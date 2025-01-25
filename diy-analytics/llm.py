@@ -51,6 +51,7 @@ def ask_llm(query, data_summary):
         "Assume the dataset has been read into a dataframe called df."
         "If the query involves generating a chart (e.g., bar plot), please ensure the chart displays no more than 10 categories (top or bottom)."
         "If the user specifically requests to show all categories, include that in the code. If no specific instruction is provided, limit the chart to the top or bottom 10 categories based on the count or value"
+        "Return code only, no text."
     )
 
     messages = [
@@ -76,4 +77,12 @@ def handle_query(query, data):
     summary_data = summarize_data(data, relevant_columns)
     code = ask_llm(query, summary_data)
 
+    # return f"{columns} \n\n {relevant_columns} \n\n {summary_data} \n\n {code}"
     return code
+
+# test
+import pandas as pd
+data = pd.read_csv("Loan_Delinquent_Dataset.csv")
+query = "How many females didn't return back the loans they took?"
+
+print(handle_query(query, data))
