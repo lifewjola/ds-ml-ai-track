@@ -76,13 +76,5 @@ def handle_query(query, data):
     relevant_columns = get_relevant_columns(query, columns)
     summary_data = summarize_data(data, relevant_columns)
     code = ask_llm(query, summary_data)
-
-    # return f"{columns} \n\n {relevant_columns} \n\n {summary_data} \n\n {code}"
     return code
 
-# test
-import pandas as pd
-data = pd.read_csv("Loan_Delinquent_Dataset.csv")
-query = "How many females didn't return back the loans they took?"
-
-print(handle_query(query, data))
