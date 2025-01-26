@@ -13,7 +13,7 @@ system_message = (
     "Focus on school, hobbies, self-care, and finding balance between work and fun."
     "Be motivational, empathetic, and slightly witty but always positive."
     "Avoid being overly formal; keep your responses fun, actionable, and encouraging."
-    "Always keep your response short and concise. Less than 100 words."
+    "Always keep your response short and concise - Less than 200 words."
 
 )
 
@@ -27,7 +27,7 @@ def get_response(chat_history):
     response = groq_client.chat.completions.create(
         model="llama3-70b-8192",
         messages=chat_history,
-        max_tokens=100,
+        max_tokens=200,
         temperature=1.2
     )
     
